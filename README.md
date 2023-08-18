@@ -4,3 +4,4 @@
 - [MARCHING CUBES: A HIGH RESOLUTION 3D SURFACE CONSTRUCTION ALGORITHM](https://people.eecs.berkeley.edu/~jrs/meshpapers/LorensenCline.pdf)
 - [Generating Complex Procedural Terrains Using the GPU](https://developer.nvidia.com/gpugems/gpugems3/part-i-geometry/chapter-1-generating-complex-procedural-terrains-using-gpu)
 - [Coding Adventure: Marching Cubes - Sebastian Lague](https://www.youtube.com/watch?v=M3iI2l0ltbE)
+- [Vertex and Edge indices](http://paulbourke.net/geometry/polygonise/polygonise1.gif)

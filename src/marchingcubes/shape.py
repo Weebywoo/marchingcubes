@@ -66,8 +66,6 @@ def _construct_triangles(noise_levels: numpy.ndarray,
                          surface_level: float,
                          interpolate: bool
                          ) -> list | None:
-    # Vertex indices according to this image:
-    # http://paulbourke.net/geometry/polygonise/polygonise1.gif
     above_surface_level_mask = [int(noise_level > surface_level) for noise_level in noise_levels]
     triangulation_index = sum(2 ** index * entry for index, entry in enumerate(above_surface_level_mask))
 
