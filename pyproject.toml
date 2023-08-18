@@ -1,0 +1,17 @@
+[project]
+name = "MarchingCubes"
+version = "0.0.2"
+authors = [
+    { name = "Weebywoo", email = "" },
+]
+description = "A Python package to create a shape based on opensimplex noise"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/weebywoo/marchingcubes"

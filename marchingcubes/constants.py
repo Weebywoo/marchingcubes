@@ -275,4 +275,4 @@ class Constants:
 
     SURFACE_LEVEL: float = 0.7
     NOISE_SCALE: float = 0.75
-    NOISE_RESOLUTION: float = 10.0
+    NOISE_RESOLUTION: float = 0.1
