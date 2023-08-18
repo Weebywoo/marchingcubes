@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>marchingcubes.shape &mdash; MarchingCubes Documentation 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css"/>
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css"/>
+    <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html"/>
+    <link rel="search" title="Search" href="../../search.html"/>
+</head>
+
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
+
+
+                <a href="../../index.html" class="icon icon-home">
+                    MarchingCubes Documentation
+                </a>
+                <div role="search">
+                    <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+                        <input type="text" name="q" placeholder="Search docs" aria-label="Search docs"/>
+                        <input type="hidden" name="check_keywords" value="yes"/>
+                        <input type="hidden" name="area" value="default"/>
+                    </form>
+                </div>
+            </div>
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+                <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../modules.html">marchingcubes</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+        <nav class="wy-nav-top" aria-label="Mobile navigation menu">
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <a href="../../index.html">MarchingCubes Documentation</a>
+        </nav>
+
+        <div class="wy-nav-content">
+            <div class="rst-content">
+                <div role="navigation" aria-label="Page navigation">
+                    <ul class="wy-breadcrumbs">
+                        <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+                        <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+                        <li class="breadcrumb-item active">marchingcubes.shape</li>
+                        <li class="wy-breadcrumbs-aside">
+                        </li>
+                    </ul>
+                    <hr/>
+                </div>
+                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                    <div itemprop="articleBody">
+
+                        <h1>Source code for marchingcubes.shape</h1>
+                        <div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">opensimplex</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span
+                                class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.art3d</span> <span class="kn">import</span> <span
+                                class="n">Poly3DCollection</span>
+<span class="kn">from</span> <span class="nn">marchingcubes.constants</span> <span class="kn">import</span> <span
+                                class="n">Constants</span>
+
+
+<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../../marchingcubes.html#marchingcubes.shape.plot">[docs]</a><span
+        class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">triangles</span><span
+        class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">size</span><span
+        class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span
+        class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span
+        class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a list of triangles</span>
+
+<span class="sd">    :param triangles: triangle vertices where first and last index is the same</span>
+<span class="sd">    :param size: size of the plot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span
+            class="n">figure</span><span class="p">()</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span
+            class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span
+            class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">triangle</span> <span class="ow">in</span> <span
+            class="n">triangles</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span
+            class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span
+            class="p">(</span><span class="n">triangle</span><span class="p">),</span> <span class="mi">3</span><span
+            class="p">):</span>
+            <span class="n">collection</span> <span class="o">=</span> <span class="n">Poly3DCollection</span><span
+            class="p">([</span><span class="n">triangle</span><span class="p">[</span><span class="n">index</span><span
+            class="p">:</span><span class="n">index</span> <span class="o">+</span> <span class="mi">3</span><span
+            class="p">]])</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">add_collection3d</span><span
+            class="p">(</span><span class="n">collection</span><span class="p">)</span>
+
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlim3d</span><span class="p">(</span><span
+            class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span
+            class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span
+            class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_ylim3d</span><span class="p">(</span><span
+            class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span
+            class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span
+            class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_zlim3d</span><span class="p">(</span><span
+            class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span
+            class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span
+            class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span
+            class="s1">&#39;X&#39;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span
+            class="s1">&#39;Y&#39;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span
+            class="s1">&#39;Z&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_opensimplex_3d_array</span><span class="p">(</span><span class="n">vectices</span><span
+                                class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span
+                                class="p">,</span> <span class="n">noise_resolution</span><span class="p">:</span> <span
+                                class="nb">float</span><span class="p">,</span> <span class="n">noise_scale</span><span
+                                class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span
+                                class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span
+                                class="nb">float</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">opensimplex</span><span class="o">.</span><span class="n">noise3</span><span
+                                class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">noise_resolution</span><span
+                                class="p">,</span> <span class="n">y</span> <span class="o">/</span> <span class="n">noise_resolution</span><span
+                                class="p">,</span> <span class="n">z</span> <span class="o">/</span> <span class="n">noise_resolution</span><span
+                                class="p">)</span> <span class="o">/</span> <span class="n">noise_scale</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span
+                                class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">vectices</span>
+    <span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_edge_coordinate</span><span class="p">(</span><span class="n">edge_index</span><span
+                                class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                         <span class="n">vertices</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                         <span class="n">noise_levels</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                         <span class="n">surface_level</span><span class="p">:</span> <span class="nb">float</span><span
+                                class="p">,</span>
+                         <span class="n">interpolate</span><span class="p">:</span> <span class="nb">bool</span><span
+                                class="p">,</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">index_one</span><span class="p">,</span> <span class="n">index_two</span> <span
+                                class="o">=</span> <span class="n">Constants</span><span class="o">.</span><span
+                                class="n">EDGE_INDEX_TO_VERTEX_INDICES</span><span class="p">[</span><span class="n">edge_index</span><span
+                                class="p">]</span>
+
+    <span class="k">if</span> <span class="n">interpolate</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_interpolation</span><span class="p">(</span>
+            <span class="n">vertices</span><span class="p">[</span><span class="n">index_one</span><span
+                                class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span
+                                class="n">index_two</span><span class="p">],</span>
+            <span class="n">noise_levels</span><span class="p">[</span><span class="n">index_one</span><span class="p">],</span> <span
+                                class="n">noise_levels</span><span class="p">[</span><span
+                                class="n">index_two</span><span class="p">],</span>
+            <span class="n">surface_level</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span
+                                class="p">([</span><span class="n">vertices</span><span class="p">[</span><span
+                                class="n">index_one</span><span class="p">],</span> <span class="n">vertices</span><span
+                                class="p">[</span><span class="n">index_two</span><span class="p">]],</span> <span
+                                class="n">axis</span><span class="o">=</span><span class="mi">0</span><span
+                                class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_interpolation</span><span class="p">(</span><span
+                                class="n">vertex_one</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                   <span class="n">vertex_two</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                   <span class="n">noise_value_one</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                   <span class="n">noise_value_two</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                   <span class="n">surface_level</span><span class="p">:</span> <span class="nb">float</span>
+                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span
+                                class="n">surface_level</span> <span class="o">-</span> <span
+                                class="n">noise_value_one</span><span class="p">)</span> <span class="o">/</span> <span
+                                class="p">(</span><span class="n">noise_value_two</span> <span class="o">-</span> <span
+                                class="n">noise_value_one</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">vertex_one</span> <span class="o">+</span> <span
+                                class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="n">vertex_two</span> <span
+                                class="o">-</span> <span class="n">vertex_one</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_construct_triangles</span><span class="p">(</span><span class="n">noise_levels</span><span
+                                class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span
+                                class="p">,</span>
+                         <span class="n">vertices</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                         <span class="n">surface_level</span><span class="p">:</span> <span class="nb">float</span><span
+                                class="p">,</span>
+                         <span class="n">interpolate</span><span class="p">:</span> <span class="nb">bool</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span
+                                class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span
+                                class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">above_surface_level_mask</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span
+                                class="p">(</span><span class="n">noise_level</span> <span class="o">&gt;</span> <span
+                                class="n">surface_level</span><span class="p">)</span> <span class="k">for</span> <span
+                                class="n">noise_level</span> <span class="ow">in</span> <span
+                                class="n">noise_levels</span><span class="p">]</span>
+    <span class="n">triangulation_index</span> <span class="o">=</span> <span class="nb">sum</span><span
+                                class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">index</span> <span
+                                class="o">*</span> <span class="n">entry</span> <span class="k">for</span> <span
+                                class="n">index</span><span class="p">,</span> <span class="n">entry</span> <span
+                                class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span
+                                class="n">above_surface_level_mask</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">edge_indices</span> <span class="o">:=</span> <span
+                                class="n">Constants</span><span class="o">.</span><span
+                                class="n">TRIANGULATION_TABLE</span><span class="p">[</span><span class="n">triangulation_index</span><span
+                                class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">_get_edge_coordinate</span><span class="p">(</span><span class="n">edge_index</span><span
+                                class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span
+                                class="n">noise_levels</span><span class="p">,</span> <span
+                                class="n">surface_level</span><span class="p">,</span> <span
+                                class="n">interpolate</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">edge_index</span> <span class="ow">in</span> <span class="n">edge_indices</span>
+        <span class="p">]</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">_get_noiselevels</span><span class="p">(</span><span
+                                class="n">vertices</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                     <span class="n">noise</span><span class="p">:</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span
+                                class="kc">None</span><span class="p">,</span>
+                     <span class="n">noise_resolution</span><span class="p">:</span> <span class="nb">float</span><span
+                                class="p">,</span>
+                     <span class="n">noise_scale</span><span class="p">:</span> <span class="nb">float</span>
+                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span
+                                class="nb">list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="kc">None</span><span
+                                class="p">:</span>
+        <span class="k">return</span> <span class="n">_get_opensimplex_3d_array</span><span class="p">(</span><span
+                                class="n">vertices</span><span class="p">,</span> <span
+                                class="n">noise_resolution</span><span class="p">,</span> <span
+                                class="n">noise_scale</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">noise</span><span class="p">[</span><span
+                                class="n">z</span><span class="p">,</span> <span class="n">y</span><span
+                                class="p">,</span> <span class="n">x</span><span class="p">]</span> <span
+                                class="k">for</span> <span class="n">x</span><span class="p">,</span> <span
+                                class="n">y</span><span class="p">,</span> <span class="n">z</span> <span
+                                class="ow">in</span> <span class="n">vertices</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="construct"><a class="viewcode-back"
+                                              href="../../marchingcubes.html#marchingcubes.shape.construct">[docs]</a><span
+        class="k">def</span> <span class="nf">construct</span><span class="p">(</span><span class="n">size</span><span
+        class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span
+        class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span
+        class="p">],</span>
+              <span class="n">noise</span><span class="p">:</span> <span class="n">numpy</span><span
+            class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span
+            class="p">,</span>
+              <span class="n">surface_level</span><span class="p">:</span> <span class="nb">float</span> <span
+            class="o">=</span> <span class="n">Constants</span><span class="o">.</span><span
+            class="n">SURFACE_LEVEL</span><span class="p">,</span>
+              <span class="n">noise_scale</span><span class="p">:</span> <span class="nb">float</span> <span
+            class="o">=</span> <span class="n">Constants</span><span class="o">.</span><span
+            class="n">NOISE_SCALE</span><span class="p">,</span>
+              <span class="n">noise_resolution</span><span class="p">:</span> <span class="nb">float</span> <span
+            class="o">=</span> <span class="n">Constants</span><span class="o">.</span><span
+            class="n">NOISE_RESOLUTION</span><span class="p">,</span>
+              <span class="n">interpolate</span><span class="p">:</span> <span class="nb">bool</span> <span
+            class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+              <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span
+            class="o">=</span> <span class="kc">None</span>
+              <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span
+            class="nb">list</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span
+            class="n">ndarray</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a triangulated shape on a surface level determined by opensimplex noise</span>
+
+<span class="sd">    :param size: size of the shape</span>
+<span class="sd">    :param noise: noise values of shape size (optional)</span>
+<span class="sd">    :param surface_level: level at which the surface is to be constructed (optional)</span>
+<span class="sd">    :param noise_scale: value used to scale the noise (optional)</span>
+<span class="sd">    :param noise_resolution: resolution at which noise is captured (optional)</span>
+<span class="sd">    :param interpolate: enable linear interpolation between vertices (optional)</span>
+<span class="sd">    :param seed: seed used to determine noise generation (optional)</span>
+<span class="sd">    :return: vertices where first and last index is the same</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span
+            class="kc">None</span><span class="p">:</span>
+        <span class="n">opensimplex</span><span class="o">.</span><span class="n">seed</span><span
+            class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span
+            class="n">z</span> <span class="ow">in</span> <span class="n">_iterator</span><span class="p">(</span><span
+            class="n">size</span><span class="p">):</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">numpy</span><span
+            class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span
+            class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span
+            class="p">],</span>
+            <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">,</span> <span class="n">z</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span
+            class="p">,</span> <span class="n">z</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span
+            class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span> <span
+            class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">],</span>
+            <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span
+            class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span
+            class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span
+            class="p">],</span>
+        <span class="p">])</span>
+        <span class="n">noise_levels</span> <span class="o">=</span> <span class="n">_get_noiselevels</span><span
+            class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">noise</span><span
+            class="p">,</span> <span class="n">noise_resolution</span><span class="p">,</span> <span class="n">noise_scale</span><span
+            class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">triangles</span> <span
+            class="o">:=</span> <span class="n">_construct_triangles</span><span class="p">(</span><span class="n">noise_levels</span><span
+            class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span
+            class="n">surface_level</span><span class="p">,</span> <span class="n">interpolate</span><span
+            class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span
+            class="p">:</span>
+            <span class="n">shape</span><span class="o">.</span><span class="n">append</span><span
+            class="p">(</span><span class="n">triangles</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">shape</span></div>
+
+
+<span class="k">def</span> <span class="nf">_iterator</span><span class="p">(</span><span class="n">shape</span><span
+                                class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span
+                                class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span
+                                class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">(</span><span
+                                class="n">nditer</span> <span class="o">:=</span> <span class="n">numpy</span><span
+                                class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">numpy</span><span
+                                class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span
+                                class="p">),</span> <span class="p">[</span><span
+                                class="s2">&quot;multi_index&quot;</span><span class="p">])):</span>
+        <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span
+                                class="n">zi</span> <span class="o">=</span> <span class="n">nditer</span><span
+                                class="o">.</span><span class="n">multi_index</span>
+
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span
+                                class="n">not_equal</span><span class="p">((</span><span class="n">xi</span> <span
+                                class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span
+                                class="n">yi</span> <span class="o">+</span> <span class="mi">1</span><span
+                                class="p">,</span> <span class="n">zi</span> <span class="o">+</span> <span
+                                class="mi">1</span><span class="p">),</span> <span class="n">shape</span><span
+                                class="p">)</span><span class="o">.</span><span class="n">all</span><span
+                                class="p">():</span>
+            <span class="k">yield</span> <span class="n">xi</span><span class="p">,</span> <span
+                                class="n">yi</span><span class="p">,</span> <span class="n">zi</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span
+                                class="p">:</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span
+                                class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span
+                                class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">construct</span><span class="p">(</span><span
+                                class="n">size</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span
+                                class="n">size</span><span class="p">)</span>
+</pre>
+                        </div>
+
+                    </div>
+                </div>
+                <footer>
+
+                    <hr/>
+
+                    <div role="contentinfo">
+                        <p>&#169; Copyright 2023, Weebywoo.</p>
+                    </div>
+
+                    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+                    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+                    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+
+                </footer>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+    jQuery(function () {
+        SphinxRtdTheme.Navigation.enable(true);
+    });
+</script>
+
+</body>
+</html>
