@@ -19,7 +19,7 @@ shape.plot(triangles, size)
 ```
 
 Should produce a plot like this:
-![Figure_1.png](docs/Figure_1.png)
+![Figure_1.png](https://github.com/Weebywoo/marchingcubes/blob/main/docs/Figure_1.png?raw=true)
 
 For more in depth information visit my [docs](https://marchingcubes.readthedocs.io/en/latest/).
 
