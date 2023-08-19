@@ -11,7 +11,7 @@ def plot(triangles: list,
          ):
     """Plot a list of triangles
 
-    :param noise_resolution: noise sampling rate
+    :param noise_resolution: resolution at which noise is captured (optional)
     :param triangles: triangle vertices where first and last index is the same
     :param size: size of the plot
     """
