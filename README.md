@@ -1,6 +1,6 @@
-# Marchingcubes
+# MarchingCubes
 
-A Python package to create a shape based on opensimplex noise"
+A Python package to create a shape based on opensimplex noise
 
 ## Features
 

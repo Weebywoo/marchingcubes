@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>marchingcubes.constants &mdash; MarchingCubes Documentation 0.0.3 documentation</title>
+  <title>marchingcubes.constants &mdash; MarchingCubes Documentation 1.1.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -70,7 +70,7 @@
              
   <h1>Source code for marchingcubes.constants</h1><div class="highlight"><pre>
 <div class="viewcode-block" id="Constants"><a class="viewcode-back" href="../../marchingcubes.html#marchingcubes.constants.Constants">[docs]</a><span></span><span class="k">class</span> <span class="nc">Constants</span><span class="p">:</span>
-    <span class="n">TRIANGULATION_TABLE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">TRIANGULATION_TABLE</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">[],</span>
         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
@@ -328,8 +328,7 @@
         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
         <span class="p">[]</span>
     <span class="p">]</span>
-
-    <span class="n">EDGE_INDEX_TO_VERTEX_INDICES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">EDGE_INDEX_TO_VERTEX_INDICES</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
         <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
         <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
@@ -343,10 +342,10 @@
         <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
         <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
     <span class="p">]</span>
-
-    <span class="n">SURFACE_LEVEL</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
-    <span class="n">NOISE_SCALE</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.75</span>
-    <span class="n">NOISE_RESOLUTION</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span></div>
+    <span class="n">SURFACE_LEVEL</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">NOISE_SCALE</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">NOISE_RESOLUTION</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">INTERPOLATE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
 </pre></div>
 
            </div>

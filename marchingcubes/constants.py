@@ -1,5 +1,5 @@
 class Constants:
-    TRIANGULATION_TABLE = [
+    TRIANGULATION_TABLE: list[list[int]] = [
         [],
         [0, 8, 3],
         [0, 1, 9],
@@ -257,8 +257,7 @@ class Constants:
         [0, 3, 8],
         []
     ]
-
-    EDGE_INDEX_TO_VERTEX_INDICES = [
+    EDGE_INDEX_TO_VERTEX_INDICES: list[list[int]] = [
         [0, 1],
         [1, 2],
         [2, 3],
@@ -272,7 +271,7 @@ class Constants:
         [2, 6],
         [3, 7]
     ]
-
-    SURFACE_LEVEL: float = 0.7
-    NOISE_SCALE: float = 0.75
+    SURFACE_LEVEL: float = 0.5
+    NOISE_SCALE: float = 1.0
     NOISE_RESOLUTION: float = 0.1
+    INTERPOLATE: bool = True
