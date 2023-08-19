@@ -1,3 +1,4 @@
 matplotlib
 numpy
 opensimplex
+sphinx-rtd-theme
