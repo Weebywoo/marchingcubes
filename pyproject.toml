@@ -2,16 +2,16 @@
 name = "MarchingCubes"
 version = "0.0.3"
 authors = [
-    { name = "Weebywoo", email = "" },
+    { name = "Weebywoo" },
 ]
 description = "A Python package to create a shape based on opensimplex noise"
-readme = "README.md"
+readme = "./README.md"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
-    "Operating System :: OS Independent",
+    "License :: OSI Approved :: GNU Affero General Public License v3"
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/weebywoo/marchingcubes"
+"Repository" = "https://github.com/weebywoo/marchingcubes"
+"Documentation" = "https://marchingcubes.readthedocs.io/en/latest/"
