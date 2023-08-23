@@ -11,11 +11,12 @@ A Python package to create a shape based on opensimplex noise
 ## Basic Usage
 
 ```py
-from marchingcubes import shape
+from marchingcubes import construct
+from marchingcubes import plot
 
 size = (10, 10, 10)
-triangles = shape.construct(size)
-shape.plot(triangles, size)
+triangles = construct(size)
+plot(triangles, size)
 ```
 
 Should produce a plot like this:
