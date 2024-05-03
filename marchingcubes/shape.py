@@ -83,7 +83,7 @@ def _construct_voxel(noise: numpy.ndarray, vertices: numpy.ndarray, surface_mask
 
 
 def _get_noise(size: float, sample_points: int) -> numpy.ndarray:
-    step = size / (size / (1 / sample_points))
+    step = 1 / sample_points
     xi = numpy.arange(start=0, stop=size + step, step=step)
     yi = numpy.arange(start=0, stop=size + step, step=step)
     zi = numpy.arange(start=0, stop=size + step, step=step)
@@ -91,22 +91,18 @@ def _get_noise(size: float, sample_points: int) -> numpy.ndarray:
     return opensimplex.noise3array(xi, yi, zi)
 
 
-def construct(size: float,
-              surface_level: float = 0.0,
-              n: int = 1,
-              interpolate: bool = True
-              ) -> list[list[numpy.ndarray]]:
+def construct(size: float, surface_level: float = 0.0, sample_points: int = 1, interpolate: bool = True) -> list[
+    list[numpy.ndarray]]:
     """Construct a triangulated shape on a surface level determined by opensimplex noise
 
     :param size: size of the shape (required)
     :param surface_level: level at which the surface is to be constructed (optional)
-    :param noise_scale: value used to scale the noise (optional)
-    :param n:
+    :param sample_points: number of samples per voxel (optional)
     :param interpolate: enable linear interpolation between vertices (optional)
     :return: vertices where first and last index is the same
     """
 
-    noise = _get_noise(size, n)
+    noise = _get_noise(size, sample_points)
     triangles = []
     surface_mask = numpy.less(noise, numpy.full(noise.shape, surface_level))
 
