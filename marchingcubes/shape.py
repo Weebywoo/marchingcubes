@@ -91,8 +91,8 @@ def _get_noise(size: float, sample_points: int) -> numpy.ndarray:
     return opensimplex.noise3array(xi, yi, zi)
 
 
-def construct(size: float, surface_level: float = 0.0, sample_points: int = 1, interpolate: bool = True) -> list[
-    list[numpy.ndarray]]:
+def construct(size: float, surface_level: float = 0.0, sample_points: int = 1,
+              interpolate: bool = True) -> list[list[numpy.ndarray]]:
     """Construct a triangulated shape on a surface level determined by opensimplex noise
 
     :param size: size of the shape (required)
