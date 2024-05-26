@@ -109,7 +109,7 @@ def construct(size: float, surface_level: float = 0.0, sample_points: int = 1,
     for x, y, z in _iterator(noise):
         vertices = _get_vertices(x, y, z)
         triangles_in_cube = _construct_voxel(noise, vertices, surface_mask, interpolate, surface_level)
-        scaled_triangles_in_cube = numpy.divide(triangles_in_cube, n)
+        scaled_triangles_in_cube = numpy.divide(triangles_in_cube, sample_points)
 
         triangles.extend(scaled_triangles_in_cube)
 
