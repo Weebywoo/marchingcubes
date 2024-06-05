@@ -1,2 +1,1 @@
-from marchingcubes.shape import construct
-from marchingcubes.shape import plot
+from .shape import plot, construct
