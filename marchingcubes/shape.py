@@ -347,10 +347,6 @@ def _construct_voxel(noise: numpy.ndarray[float],
                      ) -> list[list[numpy.ndarray[float]]]:
     triangulation_index = sum(
         2 ** index * surface_mask[zi, yi, xi] for index, (zi, yi, xi) in enumerate(vertex_indices))
-
-    if triangulation_index in (0, 255):
-        return []
-
     edge_indices = TRIANGULATION_TABLE[triangulation_index]
 
     return [
