@@ -1,9 +1,13 @@
+import itertools
+
 import matplotlib.pyplot as plt
 import numpy
 import opensimplex
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-TRIANGULATION_TABLE = [
+TRIANGULATION_TABLE: list[list[int]] = [
     [],
     [0, 8, 3],
     [0, 1, 9],
@@ -259,10 +263,10 @@ TRIANGULATION_TABLE = [
     [1, 3, 8, 9, 1, 8],
     [0, 9, 1],
     [0, 3, 8],
-    []
+    [],
 ]
 
-EDGE_INDEX_TO_VERTEX_INDICES = [
+EDGE_INDEX_TO_VERTEX_INDICES: list[list[int]] = [
     [0, 1],
     [1, 2],
     [2, 3],
@@ -274,7 +278,7 @@ EDGE_INDEX_TO_VERTEX_INDICES = [
     [0, 4],
     [1, 5],
     [2, 6],
-    [3, 7]
+    [3, 7],
 ]
 
 
@@ -284,89 +288,112 @@ def plot(triangles: list):
     :param triangles: triangle vertices where first and last index is the same
     """
 
-    figure = plt.figure()
-    axis = figure.add_subplot(projection='3d')
+    figure: Figure = plt.figure()
+    axis: Axes = figure.add_subplot(projection="3d")
 
     for triangle in triangles:
-        collection = Poly3DCollection([triangle])
+        collection: Poly3DCollection = Poly3DCollection([triangle])
         axis.add_collection3d(collection)
 
-    size = numpy.max(triangles)
+    size: float = numpy.max(triangles)
 
     axis.set_xlim3d(0, size)
     axis.set_ylim3d(0, size)
     axis.set_zlim3d(0, size)
-    axis.set_xlabel('X')
-    axis.set_ylabel('Y')
-    axis.set_zlabel('Z')
+    axis.set_xlabel("X")
+    axis.set_ylabel("Y")
+    axis.set_zlabel("Z")
 
     plt.show()
 
 
-def _construct_triangle(edge_indices: list[int],
-                        vertex_indices: numpy.ndarray[int],
-                        noise: numpy.ndarray[float],
-                        interpolate: bool,
-                        surface_level: float
-                        ) -> list[numpy.ndarray[float]]:
-    triangle = []
+def _construct_triangle(
+        edge_indices: list[int],
+        vertex_indices: numpy.ndarray[int],
+        noise: numpy.ndarray[float],
+        interpolate: bool,
+        surface_level: float,
+) -> list[numpy.ndarray[float]]:
+    triangle: list[numpy.ndarray[float]] = []
 
     for edge_index in edge_indices:
         index_one, index_two = EDGE_INDEX_TO_VERTEX_INDICES[edge_index]
-        vertex_indices_one = vertex_indices[index_one]
-        vertex_indices_two = vertex_indices[index_two]
+        vertex_indices_one: numpy.ndarray[int] = vertex_indices[index_one]
+        vertex_indices_two: numpy.ndarray[int] = vertex_indices[index_two]
 
         if interpolate:
-            edge = _interpolation(vertex_indices[index_one], vertex_indices[index_two],
-                                  noise[*vertex_indices_one], noise[*vertex_indices_two],
-                                  surface_level)
+            edge: numpy.ndarray[float] = _interpolation(
+                vertex_indices[index_one],
+                vertex_indices[index_two],
+                noise[*vertex_indices_one],
+                noise[*vertex_indices_two],
+                surface_level,
+            )
         else:
-            edge = numpy.mean([vertex_indices[index_one], vertex_indices[index_two]], axis=0)
+            edge: numpy.ndarray[float] = numpy.mean(
+                [vertex_indices[index_one], vertex_indices[index_two]], axis=0
+            )
 
         triangle.append(edge)
 
     return triangle
 
 
-def _interpolation(vertex_one: numpy.ndarray[int],
-                   vertex_two: numpy.ndarray[int],
-                   noise_value_one: numpy.ndarray[float],
-                   noise_value_two: numpy.ndarray[float],
-                   surface_level: float
-                   ) -> numpy.ndarray[float]:
-    mu = (surface_level - noise_value_one) / (noise_value_two - noise_value_one)
+def _interpolation(
+        vertex_one: numpy.ndarray[int],
+        vertex_two: numpy.ndarray[int],
+        noise_value_one: numpy.ndarray[float],
+        noise_value_two: numpy.ndarray[float],
+        surface_level: float,
+) -> numpy.ndarray[float]:
+    mu: float = (surface_level - noise_value_one) / (noise_value_two - noise_value_one)
 
     return vertex_one + mu * (vertex_two - vertex_one)
 
 
-def _construct_voxel(noise: numpy.ndarray[float],
-                     vertex_indices: numpy.ndarray[int],
-                     surface_mask: numpy.ndarray[bool],
-                     interpolate: bool,
-                     surface_level: float
-                     ) -> list[list[numpy.ndarray[float]]]:
-    triangulation_index = sum(
-        2 ** index * surface_mask[zi, yi, xi] for index, (zi, yi, xi) in enumerate(vertex_indices))
-    edge_indices = TRIANGULATION_TABLE[triangulation_index]
+def _construct_triangles(
+        noise: numpy.ndarray[float],
+        vertex_indices: numpy.ndarray[int],
+        surface_mask: numpy.ndarray[bool],
+        interpolate: bool,
+        surface_level: float,
+) -> list[list[numpy.ndarray[float]]]:
+    triangulation_index: int = sum(
+        2 ** index * surface_mask[zi, yi, xi]
+        for index, (zi, yi, xi) in enumerate(vertex_indices)
+    )
+    edge_indices: list[int] = TRIANGULATION_TABLE[triangulation_index]
+    voxel: list = []
 
-    return [
-        _construct_triangle(edge_indices[index:index + 3], vertex_indices, noise, interpolate,
-                            surface_level)
-        for index in range(0, len(edge_indices), 3)
-    ]
+    for index in range(0, len(edge_indices), 3):
+        voxel.append(
+            _construct_triangle(
+                edge_indices[index: index + 3],
+                vertex_indices,
+                noise,
+                interpolate,
+                surface_level,
+            )
+        )
+
+    return voxel
 
 
-def _get_noise(size: float, sample_points: int) -> numpy.ndarray[float]:
-    step = 1 / sample_points
-    xi = numpy.arange(start=0, stop=size + step, step=step)
-    yi = numpy.arange(start=0, stop=size + step, step=step)
-    zi = numpy.arange(start=0, stop=size + step, step=step)
+def _get_noise(size: int, sample_points: int) -> numpy.ndarray[float]:
+    step: float = 1 / sample_points
+    xi: numpy.ndarray[float] = numpy.arange(start=0, stop=size + step, step=step)
+    yi: numpy.ndarray[float] = numpy.arange(start=0, stop=size + step, step=step)
+    zi: numpy.ndarray[float] = numpy.arange(start=0, stop=size + step, step=step)
 
     return opensimplex.noise3array(xi, yi, zi)
 
 
-def construct(size: float, surface_level: float = 0.0, sample_points: int = 1,
-              interpolate: bool = True) -> list[list[numpy.ndarray[float]]]:
+def construct(
+        size: int,
+        surface_level: float = 0.0,
+        sample_points: int = 1,
+        interpolate: bool = True,
+) -> list[list[numpy.ndarray[float]]]:
     """Construct a triangulated shape on a surface level determined by opensimplex noise
 
     :param size: size of the shape (required)
@@ -376,36 +403,30 @@ def construct(size: float, surface_level: float = 0.0, sample_points: int = 1,
     :return: vertex_indices where first and last index is the same
     """
 
-    noise = _get_noise(size, sample_points)
-    triangles = []
-    surface_mask = numpy.less(noise, numpy.full(noise.shape, surface_level))
+    noise: numpy.ndarray[float] = _get_noise(size, sample_points)
+    triangles: list = []
+    surface_mask: numpy.ndarray[bool] = numpy.less(
+        noise, numpy.full(noise.shape, surface_level)
+    )
 
-    for z, y, x in _iterator(noise):
-        vertex_indices = _get_vertex_indices(z, y, x)
-        triangles_in_cube = _construct_voxel(noise, vertex_indices, surface_mask, interpolate,
-                                             surface_level)
-        scaled_triangles_in_cube = numpy.divide(triangles_in_cube, sample_points)
+    for z, y, x in itertools.product(range(size * sample_points), repeat=3):
+        vertex_indices: numpy.ndarray[int] = numpy.array(
+            [
+                [z, y + 1, x],
+                [z + 1, y + 1, x],
+                [z + 1, y, x],
+                [z, y, x],
+                [z, y + 1, x + 1],
+                [z + 1, y + 1, x + 1],
+                [z + 1, y, x + 1],
+                [z, y, x + 1],
+            ]
+        )
+        triangles_in_cube: list = _construct_triangles(
+            noise, vertex_indices, surface_mask, interpolate, surface_level
+        )
+        scaled_triangles_in_cube: list = numpy.divide(triangles_in_cube, sample_points)
 
         triangles.extend(scaled_triangles_in_cube)
 
     return triangles
-
-
-def _get_vertex_indices(z: float, y: float, x: float) -> numpy.ndarray[int]:
-    return numpy.array([
-        [z, y + 1, x],  # 0
-        [z + 1, y + 1, x],  # 1
-        [z + 1, y, x],  # 2
-        [z, y, x],  # 3
-        [z, y + 1, x + 1],  # 4
-        [z + 1, y + 1, x + 1],  # 5
-        [z + 1, y, x + 1],  # 6
-        [z, y, x + 1],  # 7
-    ])
-
-
-def _iterator(iter_array: numpy.ndarray[float]) -> tuple[int, int, int]:
-    iter_shape = numpy.empty(numpy.array(iter_array.shape) - 1)
-
-    for _ in (iter_object := numpy.nditer(iter_shape, ["multi_index"])):
-        yield iter_object.multi_index
