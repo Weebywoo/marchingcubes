@@ -1,8 +1,8 @@
 import itertools
 
-import matplotlib.pyplot as plt
 import numpy
 import opensimplex
+from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
