@@ -1,3 +1,5 @@
 numpy
 opensimplex
 matplotlib
+numba
+vispy
